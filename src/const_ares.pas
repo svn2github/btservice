@@ -31,20 +31,13 @@ windows;
 
 const
  DEFAULT_BUILD_NO      = 3041;
-// ARES_VERS             = '2.1.7.3041';
  ARES_VERS             = '1.0.0.8';
  NUM_SESSIONS_TO_SUPERNODES = 5;
- 
- APPNAME               = 'Argent Alloy';//'Data Interchange Manager';
- BITTORRENT_APPNAME    = 'AA';
- AGENT_NAME            = 'Argent Alloy';//'Ares';
- AGENT_NAME2           = 'Argent Alloy';
 
-// APPNAME               = 'Data Flow Accelerator';
-// BITTORRENT_APPNAME    = 'DFA';
-
-// APPNAME               = 'Ares';
-// BITTORRENT_APPNAME    = 'AG';     
+ APPNAME               = 'BTService';//'Argent Alloy';
+ BITTORRENT_APPNAME    = 'BS';///'AA';
+ AGENT_NAME            = 'BTService';///'Argent Alloy';
+ AGENT_NAME2           = 'BTService';///'Argent Alloy';
 
  STR_HTTP_LOWER='http://';
  STR_ANYFILE_DISKPATTERN='*.*';
