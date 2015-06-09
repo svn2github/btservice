@@ -217,7 +217,7 @@ implementation
 uses
  {ufrmmain,}SecureHash,helper_unicode,vars_localiz,helper_diskio,helper_arescol,helper_strings,
  helper_urls,helper_sorting,{helper_visual_library,}helper_share_settings,
- helper_mimetypes,helper_datetime,vars_global,
+ helper_mimetypes,helper_filtering,helper_datetime,vars_global,
  helper_library_db,helper_ICH,helpeR_registry,dhttypes,dhtkeywords,
  bittorrentConst;
 
