@@ -736,9 +736,7 @@ begin
               if k = Item.Index then
               begin
                 FileInfo := DataTask.Files.Items[Item.Index];
-
                 Item.Caption := IntToStr(k);
-
                 FilePath := (DataTask.Directory);
                 FileName := FileInfo.ffilename;
                 FileName := StringReplace(FileName, FilePath + '\', '',
@@ -748,18 +746,15 @@ begin
                 FileName := StringReplace(FileName, '__INCOMPLETE__', '',
                   [rfReplaceAll, rfIgnoreCase]);
                 FileName := Utf8ToAnsi(FileName);
-
                 Item.SubItems.Add(FileName);
                 Item.SubItems.Add(BytesToText(FileInfo.fsize));
                 Item.SubItems.Add(BytesToText(FileInfo.fprogress));
-
                 if FileInfo.fsize > 0 then
                   Item.SubItems.Add
                     ((FloatToStrF((FileInfo.fprogress / FileInfo.fsize) * 100,
                     ffFixed, 6, 1) + '% '))
                 else
                   Item.SubItems.Add('');
-
                 break;
               end;
             end;
@@ -815,7 +810,7 @@ procedure TfMainForm.lvTasksData(Sender: TObject; Item: TListItem);
 var
   i: Integer;
   Task: TTask;
-  Procent, Procent1, Procent2: string;
+  Procent, Procent2: string;
   EndPoint: Integer;
 begin
   with TasksList.LockList do
@@ -825,212 +820,113 @@ begin
         if i = Item.Index then
         begin
           Task := Items[Item.Index];
-
-          // Ожидание закачки
-          if Task.Status = tsReady then
-            Item.ImageIndex := 0;
-
-          // В очереди
-          if Task.Status = tsQueue then
-            Item.ImageIndex := 1;
-
-          // Ошибка завершена
-          if Task.Status = tsError then
-            Item.ImageIndex := 2;
-
-          // Ошибка не завершена
-          if Task.Status = tsErroring then
-            Item.ImageIndex := 2;
-
-          // Закачка
-          if Task.Status = tsLoading then
-            Item.ImageIndex := 3;
-
-          // Остановка
-          if Task.Status = tsStoping then
-            Item.ImageIndex := 4;
-
-          // Пауза
-          if Task.Status = tsStoped then
-            Item.ImageIndex := 5;
-
-          // Закачено
-          if Task.Status = tsLoad then
-            Item.ImageIndex := 6;
-
-          // Получение ссылки
-          if Task.Status = tsGetUrl then
-            Item.ImageIndex := 7;
-
-          // Поиск
-          if Task.Status = tsProcessing then
-            Item.ImageIndex := 8;
-
-          // Раздача
-          if Task.Status = tsSeeding then
-            Item.ImageIndex := 9;
-
-          // Обработка магнет
-          if Task.Status = tsBittorrentMagnetDiscovery then
-            Item.ImageIndex := 10;
-
-          // Удален
-          if (Task.Status = tsDelete) or (Task.Status = tsDeleted) then
-            Item.ImageIndex := 11;
-
-          /// /////////////////////////////////////////////////////////////////////////////
-          // item.Caption:=DataTask.FileName;
+          // Иконка состояния
+          case Task.Status of
+            tsReady: Item.ImageIndex := 0; // Ожидание закачки
+            tsQueue: Item.ImageIndex := 1; // В очереди
+            tsError: Item.ImageIndex := 2; // Ошибка завершена
+            tsErroring: Item.ImageIndex := 2; // Ошибка не завершена
+            tsLoading: Item.ImageIndex := 3;  // Закачка
+            tsStoping: Item.ImageIndex := 4; // Остановка
+            tsStoped: Item.ImageIndex := 5; // Пауза
+            tsLoad: Item.ImageIndex := 6; // Закачано
+            tsProcessing: Item.ImageIndex := 8; // Поиск
+            tsSeeding: Item.ImageIndex := 9; // Раздача
+            tsBittorrentMagnetDiscovery: Item.ImageIndex := 10; // Magnet-поиск
+            tsDelete: Item.ImageIndex := 11; // Удаляется
+            tsDeleted: Item.ImageIndex := 11; // Удален
+          end;
           Item.SubItems.Add(Task.FileName); // Имя Файла
           Item.SubItems.Add(Task.LinkToFile); // Ссылка
-
           Item.SubItemImages[1] := 12;
-
-//          if (Task.TaskServPlugIndexIcon = -1) or
-//            (Task.TaskServPlugIndexIcon = 0) then
-//          else
-//            Item.SubItemImages[1] := Task.TaskServPlugIndexIcon;
-
-          // Состояние ///////////////////////////////////////////////////////////////////
-          begin
-            if Task.Status = tsReady then
-              Item.SubItems.Add('Ожидание');
-
-            if (Task.TotalSize > 0) and (Task.Status = tsStoped) then
-              Item.SubItems.Add(FloatToStrF((Task.LoadSize / Task.TotalSize) *
-                100, ffFixed, 6, 1) + '% ' + 'Пауза');
-
-            if (Task.TotalSize <= 0) and (Task.Status = tsStoped) then
-              Item.SubItems.Add('0% ' + 'Пауза');
-
-            if Task.Status = tsQueue then
-              Item.SubItems.Add('В очереди');
-
-            if Task.Status = tsStoping then
-              Item.SubItems.Add('Останавливается');
-
-            if Task.Status = tsLoad then
-              Item.SubItems.Add('Завершено');
-
-            if Task.Status = tsError then
-              Item.SubItems.Add('Ошибка');
-
-            if (Task.Status = tsDelete) or (Task.Status = tsDeleted) then
-              Item.SubItems.Add('Удалено');
-
-            if Task.Status = tsBittorrentMagnetDiscovery then
-              Item.SubItems.Add('Magnet-поиск');
-
-            if Task.Status = tsSeeding then
-              Item.SubItems.Add('Раздача');
-
-            if Task.Status = tsFileError then
-              Item.SubItems.Add('Ошибка торрента');
-
-            if Task.Status = tsAllocating then
-              Item.SubItems.Add('Распределение');
-
-            if Task.Status = tsFinishedAllocating then
-              Item.SubItems.Add('Распределение завершено');
-
-            if Task.Status = tsRebuilding then
-              Item.SubItems.Add('Восстановление');
-
-            if Task.Status = tsProcessing then
-              Item.SubItems.Add('Поиск');
-
-            if Task.Status = tsJustCompleted then
-              Item.SubItems.Add('Завершается');
-
-            if Task.Status = tsCancelled then
-              Item.SubItems.Add('Отменено');
-
-            if Task.Status = tsQueuedSource then
-              Item.SubItems.Add('Очередь');
-
-            if Task.Status = tsUploading then
-              Item.SubItems.Add('Раздача');
-
-            if Task.Status = tsStartProcess then
-              Item.SubItems.Add('Запуск');
-
-            if Task.Status = tsLoading then
-            begin
-              if Task.TotalSize > 0 then
+          // Состояние
+          case Task.Status of
+            tsReady: Item.SubItems.Add('Ожидание');
+            tsQueue: Item.SubItems.Add('В очереди');
+            tsError: Item.SubItems.Add('Ошибка');
+            tsErroring: Item.SubItems.Add('Ошибка');
+            tsLoading:
               begin
-                Procent := FloatToStr((Task.LoadSize / Task.TotalSize) * 100);
+                if Task.TotalSize > 0 then
                 begin
-                  EndPoint := pos(',', Procent);
-                  if EndPoint <> 0 then
+                  Procent := FloatToStr((Task.LoadSize / Task.TotalSize) * 100);
                   begin
-                    Procent1 := copy(Procent, 1, EndPoint - 1);
-                    Procent2 := copy(Procent, 1, EndPoint + 1);
-                    Item.SubItems.Add(Procent2 + '% ' + 'Закачка');
-                  end
-                  else
-                  begin
-                    try
-                      Procent2 := FloatToStrF(StrToInt(Procent), ffFixed, 6, 1);
-                    except
+                    EndPoint := pos(',', Procent);
+                    if EndPoint <> 0 then
+                    begin
+                      Procent2 := copy(Procent, 1, EndPoint + 1);
+                      Item.SubItems.Add(Procent2 + '% ' + 'Закачка');
+                    end
+                    else
+                    begin
+                      try
+                        Procent2 := FloatToStrF(StrToInt(Procent),
+                          ffFixed, 6, 1);
+                      except
+                      end;
+                      Item.SubItems.Add(Procent2 + '% ' + 'Закачка');
                     end;
-                    Item.SubItems.Add(Procent2 + '% ' + 'Закачка');
                   end;
-                end;
-              end
+                end
+                else
+                  Item.SubItems.Add('');
+              end;
+            tsStoping: Item.SubItems.Add('Останавливается');
+            tsStoped: if (Task.TotalSize > 0) then
+                Item.SubItems.Add(FloatToStrF((Task.LoadSize / Task.TotalSize) *
+                  100, ffFixed, 6, 1) + '% ' + 'Пауза')
               else
-                Item.SubItems.Add('');
-            end;
-
+                Item.SubItems.Add('0% ' + 'Пауза');
+            tsLoad: Item.SubItems.Add('Завершено');
+            tsProcessing: Item.SubItems.Add('Поиск');
+            tsSeeding: Item.SubItems.Add('Раздача');
+            tsBittorrentMagnetDiscovery: Item.SubItems.Add('Magnet-поиск');
+            tsDelete: Item.SubItems.Add('Удалено');
+            tsDeleted: Item.SubItems.Add('Удалено');
+            tsFileError: Item.SubItems.Add('Ошибка торрента');
+            tsAllocating: Item.SubItems.Add('Распределение');
+            tsFinishedAllocating: Item.SubItems.Add('Распределение завершено');
+            tsRebuilding: Item.SubItems.Add('Восстановление');
+            tsJustCompleted: Item.SubItems.Add('Завершается');
+            tsCancelled: Item.SubItems.Add('Отменено');
+            tsUploading: Item.SubItems.Add('Раздача');
+            tsStartProcess: Item.SubItems.Add('Запуск');
           end;
-
-          // Осталось ////////////////////////////////////////////////////////////////////
           if Task.Speed > 0 then
           begin
             Item.SubItems.Add(GetTimeStr((Task.TotalSize - Task.LoadSize)
-              div Task.Speed));
+              div Task.Speed)); // Осталось
           end
           else
             Item.SubItems.Add('');
-          /// /////////////////////////////////////////////////////////////////////////////
-          // Прошло
-          // Item.SubItems.Add(FormatDateTime('hh:mm:ss', Task.TimeTotal));
-          /// /////////////////////////////////////////////////////////////////////////////
-
-          // Размер
           if Task.TotalSize > 0 then
-            Item.SubItems.Add(BytesToText(Task.TotalSize))
+            Item.SubItems.Add(BytesToText(Task.TotalSize)) // Размер
           else
-            Item.SubItems.Add(' ');
-          // Закачано
-          Item.SubItems.Add(BytesToText(Task.LoadSize));
-          // Скорость
+            Item.SubItems.Add('');
+          Item.SubItems.Add(BytesToText(Task.LoadSize)); // Закачано
           if Task.Speed > 0 then
-            Item.SubItems.Add(BytesToText(Task.Speed) + '/s')
+            Item.SubItems.Add(BytesToText(Task.Speed) + '/s') // Скорость
           else
             Item.SubItems.Add('');
-          // Сиды
           if Task.NumConnectedSeeders > 0 then
-            Item.SubItems.Add(IntToStr(Task.NumConnectedSeeders))
+            Item.SubItems.Add(IntToStr(Task.NumConnectedSeeders)) // Сиды
           else
             Item.SubItems.Add('');
-          // Пиры
           if Task.NumConnectedLeechers > 0 then
-            Item.SubItems.Add(IntToStr(Task.NumConnectedLeechers))
+            Item.SubItems.Add(IntToStr(Task.NumConnectedLeechers)) // Пиры
           else
             Item.SubItems.Add('');
-          // Скорость отдачи
           if Task.UploadSpeed > 0 then
-            Item.SubItems.Add(BytesToText(Task.UploadSpeed) + '/s')
+            Item.SubItems.Add(BytesToText(Task.UploadSpeed) + '/s') // Скорость отдачи
           else
             Item.SubItems.Add('');
-          // Отдано
           if Task.UploadSize > 0 then
-            Item.SubItems.Add(BytesToText(Task.UploadSize))
+            Item.SubItems.Add(BytesToText(Task.UploadSize)) // Отдано
           else
             Item.SubItems.Add('');
           break;
         end;
       end;
-
     finally
       TasksList.UnLockList;
     end;
