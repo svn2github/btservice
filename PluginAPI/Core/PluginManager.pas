@@ -20,8 +20,7 @@ uses
   Helpers,
   Forms,
   uObjects,
-  uConstsProg,
-  sLabel;
+  uConstsProg;
 
 type
   EPluginManagerError = class(Exception);
@@ -70,8 +69,6 @@ type
     procedure SetPanelInfoRank(Value: TPanel);
     function GetGlobalRank: String;
     procedure SetGlobalRank(Value: String);
-    function GetGlobalRankLabel: TsLabelFX;
-    procedure SetGlobalRankLabel(Value: TsLabelFX);
     function GetPictureRatings: TMemoryStream;
     procedure SetPictureRatings(Value: TMemoryStream);
     function GetTaskIndexIcon: Integer;
@@ -115,8 +112,6 @@ type
       write SetPanelStatistic;
     property PanelInfoRank: TPanel read GetPanelInfoRank write SetPanelInfoRank;
     property GlobalRank: string read GetGlobalRank write SetGlobalRank;
-    property GlobalRankLabel: TsLabelFX read GetGlobalRankLabel
-      write SetGlobalRankLabel;
     property PictureRatings: TMemoryStream read GetPictureRatings
       write SetPictureRatings;
     property TaskIndexIcon: Integer read GetTaskIndexIcon
@@ -278,7 +273,6 @@ type
     FPanelStatistic: TPanel;
     FPanelInfoRank: TPanel;
     FGlobalRank: String;
-    FGlobalRankLabel: TsLabelFX;
     FPictureRatings: TMemoryStream;
     FTaskIndexIcon: Integer;
     FItemIndex: Integer;
@@ -340,8 +334,6 @@ type
     procedure SetPanelInfoRank(Value: TPanel);
     function GetGlobalRank: String;
     procedure SetGlobalRank(Value: String);
-    function GetGlobalRankLabel: TsLabelFX;
-    procedure SetGlobalRankLabel(Value: TsLabelFX);
     function GetPictureRatings: TMemoryStream;
     procedure SetPictureRatings(Value: TMemoryStream);
     function GetTaskIndexIcon: Integer;
@@ -981,16 +973,6 @@ end;
 procedure TPlugin.SetGlobalRank(Value: String);
 begin
   FGlobalRank := Value;
-end;
-
-function TPlugin.GetGlobalRankLabel: TsLabelFX;
-begin
-  Result := FGlobalRankLabel;
-end;
-
-procedure TPlugin.SetGlobalRankLabel(Value: TsLabelFX);
-begin
-  FGlobalRankLabel := Value;
 end;
 
 function TPlugin.GetPictureRatings: TMemoryStream;
